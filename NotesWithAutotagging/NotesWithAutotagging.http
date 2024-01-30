@@ -1,0 +1,6 @@
+@NotesWithAutotagging_HostAddress = http://localhost:5222
+
+GET {{NotesWithAutotagging_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

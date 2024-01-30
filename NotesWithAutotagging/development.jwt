@@ -1,0 +1,7 @@
+{
+  "JwtSettings": {
+    "Issuer": "TwojIssuer",
+    "Audience": "TwojAudience",
+    "Key": "TwojSekretnyKlucz"
+  }
+}
