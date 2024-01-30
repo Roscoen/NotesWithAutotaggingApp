@@ -1,4 +1,5 @@
-﻿using NWA.Domain.Entities;
+﻿using NWA.Application.DTOs;
+using NWA.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,8 @@ namespace NWA.Application.Interfaces
 {
     public interface IUserService
     {
-        User CreateUser(string username, string password, string email);
-        bool VerifyPassword(string password, User user);
+        Task<User> RegisterAsync(string username, string password, string email);
+        Task<bool> CheckPasswordAsync(string username, string password);
+        Task<UserDto> GetUserByUsernameAsync(string username);
     }
 }

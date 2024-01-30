@@ -1,7 +1,7 @@
 {
   "JwtSettings": {
-    "Issuer": "TwojIssuer",
-    "Audience": "TwojAudience",
-    "Key": "TwojSekretnyKlucz"
+    "Issuer": "MyAppAuthServer",
+    "Audience": "MyAppAPI",
+    "Key": "TotalnieSekretnyKluczhahadobryzart"
   }
 }

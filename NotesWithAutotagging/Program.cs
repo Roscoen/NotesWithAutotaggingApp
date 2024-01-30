@@ -8,6 +8,7 @@ using NWA.Application.Interfaces;
 using NWA.Application.Services;
 using NWA.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("development.jwt", optional: false, reloadOnChange: true);
@@ -18,12 +19,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IJwtGeneratorService, JwtGeneratorService>();
+
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnections"));
 });
+builder.Services.AddScoped<IAppDbContext>(provider =>
+    provider.GetService<AppDbContext>());
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -37,20 +40,46 @@ builder.Services.AddSwaggerGen(options =>
 
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
+//var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
+//builder.Services.Configure<JwtSettings>(jwtSettings);
+builder.Services.Configure<JwtSettings>(
+    builder.Configuration.GetSection("JwtSettings"));
+
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//    .AddJwtBearer(options =>
+//    {
+//        builder.Services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
+//            .Configure<JwtSettings>((jwtOptions, jwtSettings) =>
+//            {
+//                jwtOptions.TokenValidationParameters = new TokenValidationParameters
+//                {
+//                    ValidateIssuerSigningKey = true,
+//                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
+//                    ValidateIssuer = true,
+//                    ValidateAudience = true,
+//                    ValidIssuer = jwtSettings.Issuer,
+//                    ValidAudience = jwtSettings.Audience
+//                };
+//            });
+//    });
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-     .AddJwtBearer(options =>
-     {
-         var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>(); ;
-         options.TokenValidationParameters = new TokenValidationParameters
-         {
-             ValidateIssuerSigningKey = true,
-             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
-             ValidateIssuer = true,
-             ValidateAudience = true,
-             ValidIssuer = jwtSettings.Issuer,
-             ValidAudience = jwtSettings.Audience
-         };
-     });
+    .AddJwtBearer(options =>
+    {
+        var serviceProvider = builder.Services.BuildServiceProvider();
+        var jwtSettings = serviceProvider.GetRequiredService<IOptions<JwtSettings>>().Value;
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidIssuer = jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience
+        };
+    });
+
+builder.Services.AddScoped<IJwtGeneratorService, JwtGeneratorService>();
 
 var app = builder.Build();
 

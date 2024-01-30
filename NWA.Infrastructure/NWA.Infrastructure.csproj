@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NWA.Application\NWA.Application.csproj" />
     <ProjectReference Include="..\NWA.Domain\NWA.Domain.csproj" />
   </ItemGroup>
 
