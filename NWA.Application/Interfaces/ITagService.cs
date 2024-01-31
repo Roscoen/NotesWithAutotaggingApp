@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NWA.Application.Services
+namespace NWA.Application.Interfaces
 {
     public interface ITagService
     {
-        List<string> AssignTagsToContent(string content);
+       List<string> AssignTagsToContent(string content);
+        
     }
 }
