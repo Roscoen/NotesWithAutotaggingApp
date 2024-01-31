@@ -16,7 +16,10 @@ namespace NotesWithAutotagging.Controllers
         {
             _notesService = notesService;
         }
-
+        /// <summary>
+        /// Endopoint used to get all notes
+        /// </summary>
+        /// <returns></returns>
         // GET: api/notes
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -26,6 +29,11 @@ namespace NotesWithAutotagging.Controllers
         }
 
         // GET: api/notes/{id}
+        /// <summary>
+        /// Endpoint used to get notes by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {

@@ -137,7 +137,45 @@ namespace Infrastructure.IntegrationTests
 
             Assert.Null(note);
         }
+        [Fact]
+        public async Task DeleteNote_WhenNoteExists_ShouldRemoveNoteFromDatabase()
+        {
+            // Arrange - dodanie notatki do bazy danych
+            var note = new Note { Content = "Test Note" };
+            _dbContext.Notes.Add(note);
+            await _dbContext.SaveChangesAsync();
 
+            // Act - usuwanie notatki
+            _dbContext.Notes.Remove(note);
+            await _dbContext.SaveChangesAsync();
+
+            // Assert - sprawdzenie, czy notatka została usunięta
+            var deletedNote = await _dbContext.Notes.FindAsync(note.Id);
+            Assert.Null(deletedNote);
+        }
+
+        [Fact]
+        public async Task DeleteNonExistentNote_ShouldThrowDbUpdateConcurrencyException()
+        {
+            // Arrange - dodanie istniejącej notatki
+            var existingNote = new Note { Content = "Existing Note" };
+            _dbContext.Notes.Add(existingNote);
+            await _dbContext.SaveChangesAsync();
+
+            // Act - próba usunięcia nieistniejącej notatki
+            var nonExistentNote = new Note { Id = 999, Content = "Non-existent Note" };
+            _dbContext.Notes.Remove(nonExistentNote);
+
+            // Oczekiwanie na wyjątek
+            var exception = await Record.ExceptionAsync(() => _dbContext.SaveChangesAsync());
+
+            // Assert - sprawdzenie, czy wystąpił wyjątek
+            Assert.IsType<DbUpdateConcurrencyException>(exception);
+
+            // Sprawdzenie, czy istniejąca notatka nadal jest obecna
+            var retrievedNote = await _dbContext.Notes.FindAsync(existingNote.Id);
+            Assert.NotNull(retrievedNote);
+        }
 
         public void Dispose()
         {
