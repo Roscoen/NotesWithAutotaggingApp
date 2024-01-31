@@ -15,6 +15,7 @@ namespace NWA.Infrastructure
         {
         }
         public DbSet<User> Users { get; set; }
+        public DbSet<Note> Notes { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

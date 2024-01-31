@@ -9,6 +9,7 @@ using NWA.Application.Services;
 using NWA.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using NWA.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("development.jwt", optional: false, reloadOnChange: true);
@@ -78,8 +79,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = jwtSettings.Audience
         };
     });
+builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 builder.Services.AddScoped<IJwtGeneratorService, JwtGeneratorService>();
+builder.Services.AddScoped<INoteService, NoteService>();
+builder.Services.AddScoped<ITagService, TagService>();
 
 var app = builder.Build();
 
