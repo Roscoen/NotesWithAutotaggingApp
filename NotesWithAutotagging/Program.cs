@@ -41,28 +41,11 @@ builder.Services.AddSwaggerGen(options =>
 
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
-//var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
-//builder.Services.Configure<JwtSettings>(jwtSettings);
+
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("JwtSettings"));
 
-//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-//    .AddJwtBearer(options =>
-//    {
-//        builder.Services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
-//            .Configure<JwtSettings>((jwtOptions, jwtSettings) =>
-//            {
-//                jwtOptions.TokenValidationParameters = new TokenValidationParameters
-//                {
-//                    ValidateIssuerSigningKey = true,
-//                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
-//                    ValidateIssuer = true,
-//                    ValidateAudience = true,
-//                    ValidIssuer = jwtSettings.Issuer,
-//                    ValidAudience = jwtSettings.Audience
-//                };
-//            });
-//    });
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

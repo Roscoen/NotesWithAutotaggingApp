@@ -29,7 +29,7 @@ namespace NotesWithAutotagging.Controllers
                 return BadRequest("Nie można utworzyć użytkownika.");
             }
 
-            // Można tu również zwrócić token JWT lub inne dane, w zależności od wymagań biznesowych.
+            
             return Ok(newUser);
         }
 

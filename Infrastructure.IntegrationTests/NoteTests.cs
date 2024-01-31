@@ -157,22 +157,22 @@ namespace Infrastructure.IntegrationTests
         [Fact]
         public async Task DeleteNonExistentNote_ShouldThrowDbUpdateConcurrencyException()
         {
-            // Arrange - dodanie istniejącej notatki
+            
             var existingNote = new Note { Content = "Existing Note" };
             _dbContext.Notes.Add(existingNote);
             await _dbContext.SaveChangesAsync();
 
-            // Act - próba usunięcia nieistniejącej notatki
+            
             var nonExistentNote = new Note { Id = 999, Content = "Non-existent Note" };
             _dbContext.Notes.Remove(nonExistentNote);
 
-            // Oczekiwanie na wyjątek
+            
             var exception = await Record.ExceptionAsync(() => _dbContext.SaveChangesAsync());
 
-            // Assert - sprawdzenie, czy wystąpił wyjątek
+            
             Assert.IsType<DbUpdateConcurrencyException>(exception);
 
-            // Sprawdzenie, czy istniejąca notatka nadal jest obecna
+            
             var retrievedNote = await _dbContext.Notes.FindAsync(existingNote.Id);
             Assert.NotNull(retrievedNote);
         }
